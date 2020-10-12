@@ -14,12 +14,12 @@ class User {
   }
 
   static update(user, fields) {
-    if(user instanceof User) {
-      if(fields.name !== undefined) user.name = fields.name
-      if(fields.login !== undefined) user.login = fields.login
-      if(fields.password !== undefined) user.password = fields.password
+    if (user instanceof User) {
+      if (fields.name !== undefined) user.name = fields.name;
+      if (fields.login !== undefined) user.login = fields.login;
+      if (fields.password !== undefined) user.password = fields.password;
     }
-    return user
+    return user;
   }
 
   static toResponse(user) {
