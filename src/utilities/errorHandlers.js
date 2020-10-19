@@ -10,10 +10,10 @@ class badResponseError extends Error {
 
 const unhandledHandler = (err, req, res, next) => {
   if (err) {
-    logger.winstonLogger.error({
+    logger.error({
+      type: 'unhandled error',
       method: req.method,
-      url: req.url,
-      params: req.params,
+      url: req.originalUrl,
       body: req.body
     });
     if (err instanceof badResponseError) {
@@ -30,7 +30,7 @@ const unhandledHandler = (err, req, res, next) => {
 /* eslint-disable no-process-exit */
 
 const uncaughtHandler = (err, origin) => {
-  logger.winstonLogger.error({
+  logger.error({
     type: 'uncaught exception',
     error: err,
     origin
@@ -39,7 +39,7 @@ const uncaughtHandler = (err, origin) => {
 };
 
 const unhandledRejectionHandler = (reason, promise) => {
-  logger.winstonLogger.error({
+  logger.error({
     type: 'unhandled rejection',
     reason,
     promise
@@ -47,9 +47,18 @@ const unhandledRejectionHandler = (reason, promise) => {
   logger.winstonLogger.on('finish', () => process.exit(1));
 };
 
+const catchInternal = func => async (req, res, next) => {
+  try {
+    await func(req, res, next);
+  } catch (err) {
+    return next(err);
+  }
+};
+
 module.exports = {
   badResponseError,
   unhandledHandler,
   uncaughtHandler,
-  unhandledRejectionHandler
+  unhandledRejectionHandler,
+  catchInternal
 };

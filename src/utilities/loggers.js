@@ -12,8 +12,8 @@ const winstonLogger = new winston.createLogger({
     new winston.transports.File({
       level: 'info',
       format: timestampFormat,
-      filename: `${__dirname}/../../logs/info.log`,
-      handleExceptions: true,
+      filename: `${__dirname}/../../logs/all.log`,
+      handleExceptions: false,
       json: true,
       maxsize: 1024 * 1024,
       maxFiles: 3
@@ -21,7 +21,7 @@ const winstonLogger = new winston.createLogger({
     new winston.transports.File({
       level: 'error',
       format: timestampFormat,
-      filename: `${__dirname}/../../logs/error.log`,
+      filename: `${__dirname}/../../logs/exceptions.log`,
       handleExceptions: true,
       json: true,
       maxsize: 1024 * 1024,
@@ -30,17 +30,26 @@ const winstonLogger = new winston.createLogger({
   ]
 });
 
+const error = msg => winstonLogger.error(msg);
+
+const info = msg => winstonLogger.info(msg);
+
+/* eslint-disable callback-return */
+
 const requestLoggerCallback = (req, res, next) => {
+  next();
   winstonLogger.info({
     method: req.method,
-    url: req.url,
+    url: req.originalUrl,
+    query: req.query,
     params: req.params,
     body: req.body
   });
-  next();
 };
 
 module.exports = {
   requestLoggerCallback,
-  winstonLogger
+  winstonLogger,
+  error,
+  info
 };

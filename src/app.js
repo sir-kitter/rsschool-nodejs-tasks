@@ -15,9 +15,8 @@ const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());
 // morgan.token('body', (req, res) => JSON.stringify(req.body))
-
-// morgan.token('query', (req, res) => Object.keys(req.query).length ? JSON.stringify(req.query) : 'absent')
-// app.use(morgan(':date[iso] method-:method url-:url query-:query body-:body '))
+// morgan.token('params', req => JSON.stringify(req.params));
+// app.use(morgan(':date[iso] method-:method url-:url params-:params body-:body '))
 
 app.use(logging.requestLoggerCallback);
 
