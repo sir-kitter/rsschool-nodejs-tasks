@@ -41,5 +41,6 @@ const requestLoggerCallback = (req, res, next) => {
 };
 
 module.exports = {
-  requestLoggerCallback
+  requestLoggerCallback,
+  winstonLogger
 };
