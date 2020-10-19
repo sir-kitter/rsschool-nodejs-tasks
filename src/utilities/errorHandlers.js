@@ -13,7 +13,7 @@ const unhandledHandler = (err, req, res, next) => {
     logger.winstonLogger.error({
       method: req.method,
       url: req.url,
-      query: req.query,
+      params: req.params,
       body: req.body
     });
     if (err instanceof badResponseError) {

@@ -34,7 +34,7 @@ const requestLoggerCallback = (req, res, next) => {
   winstonLogger.info({
     method: req.method,
     url: req.url,
-    query: req.query,
+    params: req.params,
     body: req.body
   });
   next();

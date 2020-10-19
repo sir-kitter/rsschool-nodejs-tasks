@@ -1,5 +1,5 @@
 const express = require('express');
-// const morgan = require('morgan');
+// const morgan = require('morgan');  // only single module is allowed according to task
 const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
@@ -38,5 +38,10 @@ boardRouter.use('/:boardId/tasks', taskRouter);
 app.use(errorHandlers.unhandledHandler);
 
 process.on('uncaughtException', errorHandlers.uncaughtHandler);
+process.on('unhandledRejection', errorHandlers.unhandledRejectionHandler);
+
+// throw Error('Oops, uncaughtException!')  // test: uncaughtException
+
+// Promise.reject(Error('Oops, unhandledRejection!'))  // test: unhandledRejection
 
 module.exports = app;
