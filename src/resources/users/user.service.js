@@ -8,9 +8,11 @@ const update = async (id, newFields) => await usersRepo.update(id, newFields);
 
 const USER_NOT_FOUND = 404;
 const USER_HAS_BEEN_DELETED = 204;
-const remove = async id => {
-  await tasksRepo.nullTaskUser(id);
-  return (await usersRepo.remove(id)) ? USER_HAS_BEEN_DELETED : USER_NOT_FOUND;
+const remove = async userId => {
+  await tasksRepo.nullTaskUser(userId);
+  return (await usersRepo.remove(userId))
+    ? USER_HAS_BEEN_DELETED
+    : USER_NOT_FOUND;
 };
 
 module.exports = { getAll, get, create, update, remove };
