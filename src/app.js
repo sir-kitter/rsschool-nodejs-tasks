@@ -36,10 +36,7 @@ app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
 app.use(errorHandlers.unhandledHandler);
-// {
-//   console.error(err.stack);
-//   res.status(500).send('Internal server error');
-//   next();
-// });
+
+process.on('uncaughtException', errorHandlers.uncaughtHandler);
 
 module.exports = app;

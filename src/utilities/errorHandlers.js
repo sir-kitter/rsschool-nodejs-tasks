@@ -27,7 +27,29 @@ const unhandledHandler = (err, req, res, next) => {
   next();
 };
 
+/* eslint-disable no-process-exit */
+
+const uncaughtHandler = (err, origin) => {
+  logger.winstonLogger.error({
+    type: 'uncaught exception',
+    error: err,
+    origin
+  });
+  logger.winstonLogger.on('finish', () => process.exit(1));
+};
+
+const unhandledRejectionHandler = (reason, promise) => {
+  logger.winstonLogger.error({
+    type: 'unhandled rejection',
+    reason,
+    promise
+  });
+  logger.winstonLogger.on('finish', () => process.exit(1));
+};
+
 module.exports = {
   badResponseError,
-  unhandledHandler
+  unhandledHandler,
+  uncaughtHandler,
+  unhandledRejectionHandler
 };
