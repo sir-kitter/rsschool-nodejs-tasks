@@ -43,7 +43,8 @@ const requestLoggerCallback = (req, res, next) => {
     url: req.originalUrl,
     query: req.query,
     params: req.params,
-    body: req.body
+    body: req.body,
+    status: res.statusCode
   });
 };
 

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Board = require('./board.model');
+const { Board } = require('./board.model');
 const boardsService = require('./board.service');
 const httpStatus = require('http-status');
 const { catchInternal } = require('./../../utilities/errorHandlers');
@@ -9,32 +9,29 @@ const { catchInternal } = require('./../../utilities/errorHandlers');
 router.route('/').get(
   catchInternal(async (req, res, next) => {
     const boards = await boardsService.getAll();
-    res.json(boards);
+    res.json(boards.map(Board.toResponse));
   })
 );
 
 router.route('/:id').get(
   catchInternal(async (req, res, next) => {
     const board = await boardsService.get(req.params.id);
-    if (board) res.json(board).status(httpStatus.OK);
+    if (board) res.json(Board.toResponse(board)).status(httpStatus.OK);
     else res.sendStatus(httpStatus.NOT_FOUND);
   })
 );
 
 router.route('/').post(
   catchInternal(async (req, res, next) => {
-    const board = await boardsService.create(new Board({ ...req.body }));
-    res.json(board);
+    const board = await boardsService.create(req.body);
+    res.json(Board.toResponse(board));
   })
 );
 
 router.route('/:id').put(
   catchInternal(async (req, res, next) => {
-    const board = await boardsService.update(req.params.id, {
-      id: req.params.id,
-      ...req.body
-    });
-    res.json(board);
+    const board = await boardsService.update(req.params.id, req.body);
+    res.json(Board.toResponse(board));
   })
 );
 

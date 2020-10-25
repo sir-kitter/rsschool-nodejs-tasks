@@ -14,7 +14,9 @@ const unhandledHandler = (err, req, res, next) => {
       type: 'unhandled error',
       method: req.method,
       url: req.originalUrl,
-      body: req.body
+      body: req.body,
+      msg: err.message,
+      stack: err.stack
     });
     if (err instanceof badResponseError) {
       res.status(err.status).send(httpStatus[err.status]);

@@ -1,5 +1,5 @@
 const router = require('express').Router({ mergeParams: true });
-const Task = require('./task.model');
+const { Task } = require('./task.model');
 const tasksService = require('./task.service');
 const httpStatus = require('http-status');
 const { catchInternal } = require('./../../utilities/errorHandlers');
@@ -9,7 +9,7 @@ const { catchInternal } = require('./../../utilities/errorHandlers');
 router.route('/').get(
   catchInternal(async (req, res, next) => {
     const tasks = await tasksService.getAll(req.params.boardId);
-    if (tasks) res.json(tasks).status(httpStatus.OK);
+    if (tasks) res.json(tasks.map(Task.toResponse)).status(httpStatus.OK);
     else res.sendStatus(httpStatus.NOT_FOUND);
   })
 );
@@ -17,7 +17,7 @@ router.route('/').get(
 router.route('/:id').get(
   catchInternal(async (req, res, next) => {
     const task = await tasksService.get(req.params.id, req.params.boardId);
-    if (task) res.json(task).status(httpStatus.OK);
+    if (task) res.json(Task.toResponse(task)).status(httpStatus.OK);
     else res.sendStatus(httpStatus.NOT_FOUND);
   })
 );
@@ -26,7 +26,7 @@ router.route('/').post(
   catchInternal(async (req, res, next) => {
     const { boardId } = req.params;
     const task = await tasksService.create(new Task({ ...req.body, boardId }));
-    res.json(task);
+    res.json(Task.toResponse(task));
   })
 );
 
@@ -37,7 +37,7 @@ router.route('/:id').put(
       ...req.body,
       boardId
     });
-    if (task) res.json(task);
+    if (task) res.json(Task.toResponse(task));
     else res.sendStatus(httpStatus.NOT_FOUND);
   })
 );
