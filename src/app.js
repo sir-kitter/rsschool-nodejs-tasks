@@ -3,15 +3,22 @@ const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
+
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
+const { verifyLogin } = require('./resources/login/login.verify');
+const { loginRouter } = require('./resources/login/login.router');
+
 const logging = require('./utilities/loggers');
 const errorHandlers = require('./utilities/errorHandlers');
 
 const app = express();
 
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
+
+process.on('uncaughtException', errorHandlers.uncaughtHandler);
+process.on('unhandledRejection', errorHandlers.unhandledRejectionHandler);
 
 app.use(express.json());
 // morgan.token('body', (req, res) => JSON.stringify(req.body))
@@ -30,14 +37,13 @@ app.use('/', (req, res, next) => {
   next();
 });
 
+app.use(verifyLogin);
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
+app.use('/login', loginRouter);
 
 app.use(errorHandlers.unhandledHandler);
-
-process.on('uncaughtException', errorHandlers.uncaughtHandler);
-process.on('unhandledRejection', errorHandlers.unhandledRejectionHandler);
 
 // throw Error('Oops, uncaughtException!')  // test: uncaughtException
 

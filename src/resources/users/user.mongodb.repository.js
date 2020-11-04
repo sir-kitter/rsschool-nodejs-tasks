@@ -7,5 +7,6 @@ const update = async (id, newFields) =>
   User.findByIdAndUpdate(id, { $set: newFields }, { new: true, lean: true });
 
 const remove = async id => User.deleteOne({ _id: id });
+const getByLogin = async login => User.findOne({ login });
 
-module.exports = { getAll, get, create, update, remove };
+module.exports = { getAll, get, create, update, remove, getByLogin };

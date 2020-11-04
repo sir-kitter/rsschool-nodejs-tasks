@@ -1,5 +1,5 @@
 /* eslint-disable no-process-exit */
-// const { User } = require('../resources/users/user.model');
+const { User } = require('../resources/users/user.model');
 // const Board = require('../resources/boards/board.model');
 const mongo = require('mongoose');
 const { MONGO_CONNECTION_STRING } = require('./config');
@@ -13,7 +13,7 @@ const init = callback => {
   const connection = mongo.connection;
 
   connection.on('error', () => {
-    console.error('connection error');
+    console.error('mongodb connection error');
     process.exit(2);
   });
   connection.once('open', () => {
@@ -21,6 +21,14 @@ const init = callback => {
     connection.collection('users').deleteMany({});
     connection.collection('boards').deleteMany({});
     connection.collection('tasks').deleteMany({});
+
+    const adminUser = new User({
+      name: 'admin',
+      login: 'admin',
+      password: 'admin'
+    });
+    adminUser.save();
+
     queueMicrotask(callback);
   });
 };
